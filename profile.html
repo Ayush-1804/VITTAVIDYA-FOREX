@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="image/favlog1r.png" type="image/png">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <title>User Profile</title>
+</head>
+<style>
+    body {
+    margin: 10px auto;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Charcoal black */
+    color: #e0e0e0; /* Light gray */
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Home Button */
+#homePageBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #35804c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#homePageBtn:hover {
+    background-color: #35804c;
+    transform: scale(1.15);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+#homePageBtn i {
+    font-size: 30px;
+}
+
+#homePageBtn span {
+    position: absolute;
+    top: 50%;
+    left: 80px;
+    transform: translateY(-50%);
+    opacity: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+#homePageBtn:hover span {
+    animation: revealText 1s forwards;
+}
+
+@keyframes revealText {
+    0% { opacity: 0; width: 0; }
+    10% { opacity: 0.1; width: 10%; }
+    20% { opacity: 0.2; width: 20%; }
+    30% { opacity: 0.3; width: 30%; }
+    40% { opacity: 0.4; width: 40%; }
+    50% { opacity: 0.5; width: 50%; }
+    60% { opacity: 0.6; width: 60%; }
+    70% { opacity: 0.7; width: 70%; }
+    80% { opacity: 0.8; width: 80%; }
+    90% { opacity: 0.9; width: 90%; }
+    100% { opacity: 1; width: 100%; }
+}
+
+/* Profile Container */
+#profile-container {
+    max-width: 800px;
+    margin: 100px auto 20px;
+    padding: 20px;
+    background: #1e1e1e; /* Slightly lighter black */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+#profile-container h2 {
+    color: #28a745; /* Embedded green */
+    margin-bottom: 15px;
+}
+
+#profile-container p {
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+/* Logout Button */
+#logout-btn {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+}
+
+#logout-btn:hover {
+    background-color: #1e7e34;
+    transform: translateY(-2px);
+}
+
+#logout-btn:active {
+    transform: translateY(1px);
+}
+
+/* Avatar Section */
+.current-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #28a745;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.current-avatar:hover {
+    transform: scale(1.1);
+}
+
+/* Avatar Container */
+.avatar-container {
+    display: none; /* Initially hidden */
+    margin: 20px auto;
+    max-width: 90%;
+}
+
+.avatar-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #fff;
+}
+
+/* Avatar Options */
+.avatar-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    max-width: 100%;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+    border-color: #28a745;
+}
+
+.avatar.selected {
+    border-color: #28a745;
+    transform: scale(1.2);
+}
+
+/* Ensure avatars don't go outside screen */
+.avatar-options img {
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-options img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Button for saving avatar */
+.save-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.save-button:hover {
+    background-color: #1e7e34;
+}
+
+.save-button:active {
+    transform: translateY(1px);
+}
+
+/* Responsive Fix */
+@media (max-width: 600px) {
+    .avatar-options {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .avatar {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+</style>
+
+<body>
+    <button id="homePageBtn" onclick="window.location.href='homepage.html'">
+        <i class="bx bx-home"></i>
+        <span>VITTAVIDYA</span>
+    </button>
+    <center>
+        <img src="image/user.jpg" alt="Current Avatar" id="current-avatar" class="current-avatar">
+        <div class="avatar-container" id="avatar-container">
+            <label>Select Your Avatar:</label>
+            <div class="avatar-options">
+                <img src="image/pfa1.png" alt="Avatar 1" class="avatar" id="avatar1">
+                <img src="image/pff1.png" alt="Avatar 2" class="avatar" id="avatar2">
+                <img src="image/pff2.png" alt="Avatar 3" class="avatar" id="avatar3">
+                <img src="image/pff3.png" alt="Avatar 4" class="avatar" id="avatar4">
+                <img src="image/pff4.png" alt="Avatar 5" class="avatar" id="avatar5">
+                <img src="image/pfm1.png" alt="Avatar 6" class="avatar" id="avatar6">
+                <img src="image/pfm2.png" alt="Avatar 1" class="avatar" id="avatar7">
+                <img src="image/pfm3.png" alt="Avatar 2" class="avatar" id="avatar8">
+                <img src="image/pfm4.png" alt="Avatar 3" class="avatar" id="avatar9">
+                <img src="image/pfm5.png" alt="Avatar 4" class="avatar" id="avatar10">
+                <img src="image/pfm6.png" alt="Avatar 5" class="avatar" id="avatar11">
+                <img src="image/pfm7.png" alt="Avatar 6" class="avatar" id="avatar12">
+                <img src="image/pfm8.png" alt="Avatar 1" class="avatar" id="avatar13">
+                <img src="image/pfm9.png" alt="Avatar 2" class="avatar" id="avatar14">
+                <img src="image/pfm10.png" alt="Avatar 3" class="avatar" id="avatar15">
+            </div>
+            <button id="save-avatar-btn" class="save-button">Save Avatar</button>
+        </div>
+    </center>
+  <div id="profile-container">
+    
+    <!-- User profile details will be displayed here -->
+</div>
+<center><button id="logout-btn">Logout</button></center>
+  <script>
+   document.addEventListener("DOMContentLoaded", () => {
+    const avatarOptions = document.querySelectorAll('.avatar');
+    const currentAvatar = document.getElementById('current-avatar');
+    const token = localStorage.getItem('authToken'); // Retrieve JWT from localStorage
+
+    // Update avatar functionality
+    avatarOptions.forEach((avatar) => {
+        avatar.addEventListener('click', () => {
+            const selectedAvatar = avatar.getAttribute('src');
+
+            // Update avatar on the server
+            fetch('/update-avatar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ avatar: selectedAvatar }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.message === 'Avatar updated successfully') {
+                        // Update the displayed avatar
+                        currentAvatar.src = selectedAvatar;
+                        alert('Avatar updated!');
+                    } else {
+                        alert('Error updating avatar');
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+        });
+    });
+
+    // Fetch user profile to display avatar
+    fetch('/profile', {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.message === 'User Profile') {
+                const user = data.data;
+                // Set the user's avatar
+                currentAvatar.src = user.avatar || 'D:/final year project vittavidya/app/image/user.jpg';
+            } else {
+                console.error('Error loading profile:', data);
+            }
+        })
+        .catch((error) => console.error('Error fetching profile:', error));
+
+    const logoutBtn = document.getElementById("logout-btn");
+    const profileContainer = document.getElementById("profile-container");
+
+    // Check if the user is logged in
+    if (token) {
+        // Fetch user profile if token exists
+        fetch("/profile", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Send JWT token in header
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.message === 'User Profile') {
+                    // Display user data on profile page
+                    profileContainer.innerHTML = `
+                        <h2>Welcome, ${data.data.fullName}</h2>
+                        <p><strong>Email:</strong> ${data.data.email}</p>
+                        <p><strong>Username:</strong> ${data.data.userName}</p>
+                        <p><strong>Country:</strong> ${data.data.country}</p>
+                    `;
+                } else {
+                    profileContainer.innerHTML = `<p>Error fetching profile details.</p>`;
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching profile data:", error);
+                profileContainer.innerHTML = `<p>Error fetching profile data.</p>`;
+            });
+    } else {
+        // Redirect to login page if no token is found
+        window.location.href = "/";
+    }
+
+    // Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            // Remove token from localStorage
+            localStorage.removeItem("authToken");
+            // Redirect to login page
+            window.location.href = "/";
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+            const currentAvatar = document.getElementById("current-avatar");
+            const avatarContainer = document.getElementById("avatar-container");
+            const avatars = document.querySelectorAll(".avatar");
+            const saveButton = document.getElementById("save-avatar-btn");
+
+            // Load saved avatar from localStorage
+            const savedAvatar = localStorage.getItem("userAvatar");
+            if (savedAvatar) {
+                currentAvatar.src = savedAvatar;
+            }
+
+            // Show avatar options on click
+            currentAvatar.addEventListener("click", () => {
+                avatarContainer.style.display = avatarContainer.style.display === "block" ? "none" : "block";
+                saveButton.style.display = avatarContainer.style.display === "block" ? "block" : "none";
+            });
+
+            // Select new avatar
+            avatars.forEach(avatar => {
+                avatar.addEventListener("click", () => {
+                    avatars.forEach(av => av.classList.remove("selected"));
+                    avatar.classList.add("selected");
+                    currentAvatar.src = avatar.src; // Update current avatar
+                });
+            });
+
+            // Save the selected avatar
+            saveButton.addEventListener("click", () => {
+                const selectedAvatar = document.querySelector(".avatar.selected");
+                if (selectedAvatar) {
+                    localStorage.setItem("userAvatar", selectedAvatar.src);
+                    alert("Avatar saved successfully!");
+                    avatarContainer.style.display = "none";
+                    saveButton.style.display = "none";
+                } else {
+                    alert("Please select an avatar before saving.");
+                }
+            });
+        });
+  </script>
+
+</body>
+</html>

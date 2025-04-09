@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feedback</title>
+</head>
+<style>
+    *{
+        color: rgba(252, 250, 250, 0.774);
+    }
+    .container {
+  width: 300px;
+  padding: 0 10px;
+  padding: 40px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  text-align: center;
+  justify-content: space-around;
+  position: relative;
+  transition: background .5s ease-in-out;
+
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80%;
+  background: #e5e5e5;
+  height: 2px;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: #f2d2bd;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #4c4c4c;
+}
+/* FIREFOX */
+input[type="range"]::-moz-range-thumb {
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #4c4c4c;
+}
+img {
+  height: 150px;
+  width: 150px;
+  outline: none;
+  animation: dance 1s infinite;
+}
+.rating {
+  font-size: 20px;
+  font-weight: 100;
+  width: 150px;
+}
+
+@keyframes dance {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+option{
+    color: black;
+}
+input, select{
+    color: black;
+}
+/* Style for the form labels */
+label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block; /* Makes labels stack above the inputs */
+}
+
+/* Style for the input fields */
+input[type="text"],
+input[type="email"] {
+    width: 80%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus state for inputs */
+input[type="text"]:focus,
+input[type="email"]:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* Soft green glow */
+    outline: none; /* Removes default browser outline */
+}
+
+/* Optional: Add some space between each input field */
+input[type="text"],
+input[type="email"] {
+    margin-top: 8px;
+}
+
+/* Optional: Add some spacing below the labels */
+label {
+    margin-top: 10px;
+}
+/* Styling for the Select dropdown (Feedback Type) */
+select {
+    width: 80%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus effect for select dropdown */
+select:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* Soft green glow */
+    outline: none;
+}
+
+/* Styling for the textarea (Feedback message) */
+textarea {
+    width: 80%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+}
+
+/* Focus effect for textarea */
+textarea:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* Soft green glow */
+    outline: none;
+}
+
+/* Styling for the submit button */
+button[type="submit"] {
+    padding: 12px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the submit button */
+button[type="submit"]:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+
+</style>
+<body>
+<div id="feedback-panel" class="hidden">
+    <div class="panel-content">
+        <h1>We’d Love Your Feedback!</h1>
+        <p>Your thoughts and suggestions help us improve. Please take a moment to share your experience with us.</p>
+
+        <form id="feedback-form">
+          <label for="name">Name :</label>
+          <input type="text" id="name" name="name">
+          <br>
+          <label for="email">Email :</label>
+          <input type="email" id="email" name="email">
+          <br>
+          <label for="rating">Rate Your Experience:</label>
+          <div class="container">
+              <img src="https://essykings.github.io/JavaScript/svg-emojis/Neutral.svg" class="emoji" alt="Neutral Emoji"></img>
+              <div class="rating">
+                  <p id="emessage">&nbsp;</p>
+              </div>
+              <input id="slider" type="range" min="0" max="100" value="50" />
+          </div>
+          <br>
+          <label for="type">Feedback Type:</label>
+          <select id="type" name="type">
+              <option value="0">Select</option>
+              <option value="suggestion">Suggestion</option>
+              <option value="complaint">Complaint</option>
+              <option value="compliment">Compliment</option>
+              <option value="other">Other</option>
+          </select>
+          <br>
+          <label for="message">Your Feedback:</label>
+          <textarea id="message" name="message" rows="4" placeholder="Write your feedback here..." required></textarea>
+          <br>
+          <button type="submit">Submit Feedback</button><br>
+      </form>      
+
+    </div>
+</div>
+
+<script>
+    window.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".container");
+  const slider = document.getElementById("slider");
+  const emoji = document.querySelector(".emoji");
+  const rate = document.getElementById("emessage");
+  const emojis = [
+  {
+    text: "Awful",
+    url: "https://assets.codepen.io/210284/Disappointed.svg"
+  },
+ {
+    text: "Bad",
+    url: "https://assets.codepen.io/210284/Sad.svg"
+  },
+  {
+    text: "Okay",
+    url: "https://assets.codepen.io/210284/Expressionless.svg"
+  },
+  {
+    text: "Good",
+    url: "https://assets.codepen.io/210284/Smile.svg"
+  },
+  {
+    text: "Great",
+    url: "https://assets.codepen.io/210284/Falling_in_love.svg"
+  }]
+
+  function setProperties(index) {
+    emoji.src = emojis[index].url;
+    rate.textContent = emojis[index].text;
+
+  }
+
+  slider.addEventListener("input", UpdateRating);
+
+  function UpdateRating() {
+    const value = slider.value;
+
+    if (value >= 0 && value < 20) {
+      setProperties(0);
+    } else if (value >= 20 && value < 40) {
+      setProperties(1);
+    } else if (value >= 40 && value < 60) {
+      setProperties(2);
+    } else if (value >= 60 && value < 80) {
+      setProperties(3);
+    } else if (value >= 80 && value <= 100) {
+      setProperties(4);
+    }
+  }
+});
+
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const feedbackForm = document.getElementById("feedback-form");
+  const submitButton = feedbackForm.querySelector("button[type='submit']");
+
+  // Event listener for form submission
+  feedbackForm.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get values from the form
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const rating = document.getElementById("slider").value;
+    const feedbackType = document.getElementById("type").value;
+    const message = document.getElementById("message").value;
+
+    // Check if all required fields are filled
+    if (!name || !email || feedbackType === "0" || !message) {
+      alert("Please fill in all required fields!");
+      return;
+    }
+
+    // Prepare the feedback data to send
+    const feedbackData = {
+      name,
+      email,
+      rating: parseInt(rating),
+      feedbackType,
+      message,
+    };
+
+    try {
+      // Update button text to show submitting state
+      submitButton.textContent = "Submitting...";
+      submitButton.disabled = true;
+
+      // Send the data to the server using the fetch API
+      const response = await fetch("/submit-feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      // Handle server response
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message); // Success message
+        feedbackForm.reset(); // Reset form
+      } else {
+        alert("Error: " + result.message); // Error message
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert("An error occurred while submitting your feedback.");
+    } finally {
+      // Reset the button text and enable it
+      submitButton.textContent = "Submit Feedback";
+      submitButton.disabled = false;
+    }
+  });
+});
+
+</script>
+
+</body>
+</html>

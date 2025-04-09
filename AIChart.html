@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link rel="icon" href="image/favlog1r.png" type="image/png">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #1e1e1e, #333);
+            margin: 0;
+            padding: 20px;
+            color: #f0f0f0;
+            height: 100%;
+        }
+    
+        #homeBtn {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            position: absolute;
+        }
+    
+        #homeBtn:hover {
+            transform: scale(1.1);
+        }
+    
+        #header h2 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #f0f0f0;
+        }
+    
+        #chatbox {
+            width: 90%;
+            max-width: 600px;
+            height: 450px;
+            border-radius: 12px;
+            background: #282828;
+            padding: 15px;
+            margin: 15px auto;
+            overflow-y: auto;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+    
+        .user, .bot {
+            margin: 6px 0;
+            padding: 10px 16px;
+            border-radius: 16px;
+            max-width: 70%;
+            display: inline-block;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+    
+        .user {
+    background: #4caf50;
+    color: white;
+    align-self: flex-end;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    float: right;
+    clear: both;
+}
+
+.bot {
+    background: #444;
+    color: white;
+    align-self: flex-start;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    float: right;
+    clear: both;
+}
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+    
+        input {
+            width: 65%;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            background: #333;
+            color: #fff;
+            font-size: 15px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+    
+        input:focus {
+            background: #444;
+            color: #f0f0f0;
+        }
+    
+        button {
+            padding: 10px 16px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+        }
+    
+        button:hover {
+            background: #388e3c;
+            transform: scale(1.05);
+        }
+    
+        button:active {
+            background: #2e7d32;
+        }
+    
+        @media (max-width: 768px) {
+            #chatbox {
+                max-width: 95%;
+                height: 350px;
+            }
+    
+            input {
+                width: 60%;
+            }
+    
+            button {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+        }
+    </style>
+    
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="header">
+            <img src="image/favlog1r.png" alt="Home" id="homeBtn" onclick="window.location.href='homepage.html'">
+            <h2>AI Chatbot</h2>
+        </div>
+        <div id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Ask me anything!" onkeypress="handleKeyPress(event)" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+ 
+    
+    
+
+    <script>
+            function getToken() {
+        return localStorage.getItem("authToken");
+    }
+
+    function getUser() {
+        return localStorage.getItem("currentUser"); // Store current user identifier
+    }
+
+    function setUser(user) {
+        localStorage.setItem("currentUser", user);
+    }
+
+    function checkUser() {
+        const token = getToken();
+        const currentUser = getUser();
+        
+        if (token) {
+            const decodedToken = parseJwt(token);
+            const newUser = decodedToken?.email || decodedToken?.id; // Extract user ID or email
+
+            if (newUser !== currentUser) {
+                localStorage.setItem("chatHistory", ""); // Clear chat for new user
+                setUser(newUser);
+                location.reload(); // Reload to start a fresh chat
+            }
+        }
+    }
+
+    function parseJwt(token) {
+        try {
+            return JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
+        } catch (e) {
+            return null;
+        }
+    }
+        async function sendMessage() {
+            const token = getToken();
+        if (!token) {
+            alert("You must be logged in to chat.");
+            return;
+        }
+
+            const input = document.getElementById("userInput");
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<div class="user">${message}</div>`;
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            try {
+                const apiKey = "AIzaSyDFrKLnSBIeyD6y_4xUKpOak9mFffkg5W0"; // Replace with your actual API key
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: message }] }]
+                    })
+                });
+
+                const data = await response.json();
+                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+
+                chatbox.innerHTML += `<div class="bot">${reply}</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } catch (error) {
+                chatbox.innerHTML += `<div class="bot">Error: Unable to connect.</div>`;
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+        window.onload = checkUser; // Run checkUser on page load
+    </script>
+</body>
+</html>
